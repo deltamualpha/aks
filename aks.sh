@@ -110,7 +110,7 @@ _aks_process_auth_info()
 );
 EOF
 	chmod 600 .s3curl
-    ln -s ../../tools/s3-curl/s3curl.pl
+	ln -s ../../tools/s3-curl/s3curl.pl
 	# env file
 	(
 		echo "export EC2_ID=$EC2_ID";
@@ -125,8 +125,8 @@ EOF
 		echo "export AWS_ACCESS_KEY_ID=$EC2_ACCESS";
 		echo "export AWS_ACCESS_SECRET_KEY=$EC2_SECRET";
 		echo "export AWS_SECRET_ACCESS_KEY=$EC2_SECRET";
-        echo "export AWS_DEFAULT_REGION=us-east-1";
-        echo "alias s3curl.pl='$AWS_DIR/auth/$AWS_ACCOUNT/s3curl.pl --id=$AWS_ACCOUNT'";
+		echo "export AWS_DEFAULT_REGION=us-east-1";
+		echo "alias s3curl.pl='$AWS_DIR/auth/$AWS_ACCOUNT/s3curl.pl --id=$AWS_ACCOUNT'";
 	) > $AWS_ACCOUNT-env.sh
 	chmod 500 $AWS_ACCOUNT-env.sh
 	popd > /dev/null
@@ -271,6 +271,18 @@ aks()
 				return 1
 			fi
 			;;
+		unset)
+			unset EC2_ID EC2_ACCESS EC2_SECRET EC2_PRIVATE_KEY EC2_CERT EC2_ACCESS_KEY EC2_SECRET_KEY
+			unset AWS_ACCESS_KEY_ID AWS_ACCESS_SECRET_KEY AWS_SECRET_ACCESS_KEY AWS_DEFAULT_REGION AWS_CREDENTIAL_FILE
+			unalias s3cmd s3curl.pl &>/dev/null
+			if [ "$AWS_ACCOUNT" != "(none)" ]
+			then
+				echo "cleared all current environmental variables and aliases for account '$AWS_ACCOUNT'"
+			else
+				echo "no account set using aks, but purged environment variables and aliases anyway"
+			fi
+			AWS_ACCOUNT="(none)"
+			;;
 		*)
 			echo "unknown arg: '$1'"
 			echo "usage:"
@@ -279,6 +291,7 @@ aks()
 			echo "   aks import [newaccountname]"
 			echo "   aks list"
 			echo "   aks use [accountname]"
+			echo "   aks unset"
 			return 1
 			;;
 	esac
@@ -291,7 +304,7 @@ _aks_complete()
 	COMPREPLY=()
 	CURRENT="${COMP_WORDS[COMP_CWORD]}"
 	PREVIOUS="${COMP_WORDS[COMP_CWORD-1]}"
-	OPTIONS="create id import list use"
+	OPTIONS="create id import list use unset"
  
 	# each subdir is a 'known' account
 	local ACCOUNTS=$(ls -1 $AWS_DIR/auth)
