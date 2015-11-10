@@ -52,6 +52,7 @@ EC2_AMITOOL_HOME, AWS_IAM_HOME, etc. etc.) from a global script.
 	   aks import [newaccountname]
 	   aks list
 	   aks use [accountname]
+     aks unset
 
 When creating an account, you will need from the AWS IAM Console, "Security Credentials" tab:
 
