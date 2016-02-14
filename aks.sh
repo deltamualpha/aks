@@ -247,8 +247,11 @@ aks()
 			;;
 		list)
 			echo "current available accounts are:"
-			ls -1 $AWS_DIR/auth
-			return 0
+			if [ -d $AWS_DIR/auth ]
+                        then
+                                ls -1 $AWS_DIR/auth
+			fi
+                        return 0
 			;;
 		use)
 			TARGET_AWS_ACCOUNT="$2"
